@@ -89,7 +89,7 @@ if (-not $noupdate) {
             } until (-not [string]::isnullorempty($response))
             if ($result -eq 'Y' -or $result -eq 'y') {
                 write-host -foregroundcolor $processmessagecolor "Updating Azure PowerShell module - Administration escalation required"
-                Start-Process powershell -Verb runAs -ArgumentList "update-Module -Name azuread -Force -confirm:$false" -wait -WindowStyle Hidden
+                Start-Process powershell -Verb runAs -ArgumentList "update-Module -Name az -Force -confirm:$false" -wait -WindowStyle Hidden
                 write-host -foregroundcolor $processmessagecolor "Azure PowerShell module - updated"
             }
             else {
@@ -98,13 +98,13 @@ if (-not $noupdate) {
         }
         else {
         write-host -foregroundcolor $processmessagecolor "Updating Azure PowerShell module - Administration escalation required" 
-        Start-Process powershell -Verb runAs -ArgumentList "update-Module -Name aipservice -Force -confirm:$false" -wait -WindowStyle Hidden
+        Start-Process powershell -Verb runAs -ArgumentList "update-Module -Name az -Force -confirm:$false" -wait -WindowStyle Hidden
         write-host -foregroundcolor $processmessagecolor "Azure PowerShell module - updated"
         }
     }
 }
 
-write-host -foregroundcolor $processmessagecolor "Azure PowerShell module loading - Please wait as this may take a while"
+write-host -foregroundcolor $processmessagecolor "Azure PowerShell module loading - Please wait, this may take a while as all services are included"
 
 Try {
     Import-Module -name az | Out-Null
@@ -121,7 +121,10 @@ write-host -foregroundcolor $processmessagecolor "Azure PowerShell module loaded
 
 ## Connect to Azure AD service
 write-host -foregroundcolor $processmessagecolor "Connecting to Azure"
+clear-azcontext -force | Out-Null
+
 try {
+    ## -MaxContextPopulation 1 no longer seems to work??
     $result = Connect-AzAccount | Out-Null
 }
 catch {
